@@ -1,18 +1,22 @@
 import type React from "react"
+import type { Metadata } from "next"
 import "./globals.css"
 import { Playfair_Display } from "next/font/google"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
+import { CartProvider } from "@/contexts/cart-context"
+import { AuthProvider } from "@/contexts/auth-context"
+import { WishlistProvider } from "./providers/wishlist-provider"
+import { Toaster } from "@/components/ui/toaster"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-serif",
 })
 
-export const metadata = {
-  title: "Naaz - Luxury Women's Fashion",
-  description: "Discover our exquisite collection of luxury cord sets designed for sophistication and comfort.",
-  generator: 'v0.dev',
+export const metadata: Metadata = {
+  title: "Naaz - Luxury Fashion",
+  description: "Discover timeless elegance with Naaz's luxury fashion collections.",
 }
 
 export default function RootLayout({
@@ -29,7 +33,14 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          {children}
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                {children}
+                <Toaster />
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

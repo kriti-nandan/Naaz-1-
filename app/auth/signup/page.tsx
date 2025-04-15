@@ -7,28 +7,35 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter()
   const [error, setError] = useState("")
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
-    rememberMe: false
+    confirmPassword: ""
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
+    const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: value
     }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
-    // Here you would typically handle the login logic
-    router.push("/")
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match")
+      return
+    }
+
+    // Here you would typically handle the signup logic
+    router.push("/auth/login")
   }
 
   return (
@@ -49,7 +56,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right Side - Login Form */}
+      {/* Right Side - Signup Form */}
       <div className="flex-1 flex flex-col justify-center items-center p-8 md:p-16">
         <div className="w-full max-w-md">
           <div className="md:hidden mb-8">
@@ -58,8 +65,8 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <h2 className="font-serif text-3xl text-dark-green mb-2">Welcome back</h2>
-          <p className="text-dark-green/70 mb-8">Please enter your details to sign in</p>
+          <h2 className="font-serif text-3xl text-dark-green mb-2">Create an account</h2>
+          <p className="text-dark-green/70 mb-8">Join our community of fashion enthusiasts</p>
 
           {error && (
             <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-6">
@@ -68,6 +75,21 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor="name" className="text-dark-green/80 text-sm">Full Name</label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                autoComplete="name"
+                required
+                placeholder="Enter your full name"
+                className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
+              />
+            </div>
+
             <div className="space-y-2">
               <label htmlFor="email" className="text-dark-green/80 text-sm">Email Address</label>
               <Input
@@ -84,40 +106,40 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label htmlFor="password" className="text-dark-green/80 text-sm">Password</label>
-                <Link href="/auth/forgot-password" className="text-rose-gold text-sm hover:underline">Forgot password?</Link>
-              </div>
+              <label htmlFor="password" className="text-dark-green/80 text-sm">Password</label>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 value={formData.password}
                 onChange={handleChange}
-                autoComplete="current-password"
+                autoComplete="new-password"
                 required
-                placeholder="••••••••"
+                placeholder="Create a password"
                 className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
               />
             </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                name="rememberMe"
-                checked={formData.rememberMe}
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="text-dark-green/80 text-sm">Confirm Password</label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
                 onChange={handleChange}
-                className="h-4 w-4 text-gold focus:ring-gold border-gold/50 rounded"
+                autoComplete="new-password"
+                required
+                placeholder="Confirm your password"
+                className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
               />
-              <label htmlFor="rememberMe" className="text-sm text-dark-green/70 leading-none">Remember me for 30 days</label>
             </div>
 
             <Button
               type="submit"
               className="bg-gold hover:bg-gold/90 text-dark-green font-medium rounded-xl w-full"
             >
-              Sign In
+              Create Account
             </Button>
 
             <div className="relative">
@@ -130,8 +152,8 @@ export default function LoginPage() {
             </div>
 
             <p className="text-center text-dark-green/70 text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/auth/signup" className="text-rose-gold hover:underline">Create account</Link>
+              Already have an account?{" "}
+              <Link href="/auth/login" className="text-rose-gold hover:underline">Sign in</Link>
             </p>
           </form>
         </div>

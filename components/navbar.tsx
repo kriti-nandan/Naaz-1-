@@ -2,113 +2,150 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, Search, ShoppingBag, User, X } from "lucide-react"
-
+import { Menu, ShoppingBag, User, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Input } from "@/components/ui/input"
+import { useWishlist } from "@/app/providers/wishlist-provider"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Navbar() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { wishlist } = useWishlist()
+  const wishlistCount = wishlist.length
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gold/20 bg-ivory/95 backdrop-blur">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* Mobile Menu */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden text-dark-green">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="bg-ivory">
-            <div className="flex flex-col gap-6 py-6">
-              <Link href="/" className="text-dark-green hover:text-dark-green/80 font-serif text-lg">
-                Home
-              </Link>
-              <Link href="/shop" className="text-dark-green hover:text-dark-green/80 font-serif text-lg">
-                Shop
-              </Link>
-              <Link href="/about" className="text-dark-green hover:text-dark-green/80 font-serif text-lg">
-                About
-              </Link>
-              <Link href="/contact" className="text-dark-green hover:text-dark-green/80 font-serif text-lg">
-                Contact
-              </Link>
-              <div className="border-t border-gold/20 pt-6">
-                <Link href="/auth/login" className="text-dark-green hover:text-dark-green/80 font-serif text-lg">
-                  Sign In
-                </Link>
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+    <nav className="bg-ivory border-b border-gold/20">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center">
+            <h1 className="text-2xl font-serif font-bold text-dark-green">Naaz</h1>
+          </Link>
 
-        {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <h1 className="text-2xl font-serif font-bold text-dark-green">Naaz</h1>
-        </Link>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link href="/" className="text-dark-green hover:text-dark-green/70">
+              Home
+            </Link>
+            <Link href="/shop" className="text-dark-green hover:text-dark-green/70">
+              Shop
+            </Link>
+            <Link href="/about" className="text-dark-green hover:text-dark-green/70">
+              About
+            </Link>
+            <Link href="/contact" className="text-dark-green hover:text-dark-green/70">
+              Contact
+            </Link>
+          </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          <Link href="/" className="text-dark-green hover:text-dark-green/80 transition-colors">
-            Home
-          </Link>
-          <Link href="/shop" className="text-dark-green hover:text-dark-green/80 transition-colors">
-            Shop
-          </Link>
-          <Link href="/about" className="text-dark-green hover:text-dark-green/80 transition-colors">
-            About
-          </Link>
-          <Link href="/contact" className="text-dark-green hover:text-dark-green/80 transition-colors">
-            Contact
-          </Link>
-        </nav>
-
-        {/* Right Icons */}
-        <div className="flex items-center gap-2">
-          {isSearchOpen ? (
-            <div className="absolute inset-0 bg-ivory/95 flex items-center justify-center px-4 z-50">
-              <div className="w-full max-w-md flex items-center">
-                <Input
-                  placeholder="Search for products..."
-                  className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                  autoFocus
-                />
+          {/* User Actions */}
+          <div className="flex items-center space-x-4">
+            <Link 
+              href="/wishlist" 
+              className="text-dark-green hover:text-dark-green/70 relative group"
+            >
+              <Heart className="h-5 w-5 transition-transform group-hover:scale-110" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+            <Link href="/cart" className="text-dark-green hover:text-dark-green/70">
+              <ShoppingBag className="h-5 w-5" />
+            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="ml-2 text-dark-green"
-                  onClick={() => setIsSearchOpen(false)}
+                  className="text-dark-green hover:text-dark-green/70"
                 >
-                  <X className="h-5 w-5" />
-                  <span className="sr-only">Close search</span>
+                  <User className="h-5 w-5" />
                 </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-ivory border-gold/30">
+                <DropdownMenuItem asChild>
+                  <Link href="/auth/login" className="w-full cursor-pointer">
+                    Sign In
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/auth/signup" className="w-full cursor-pointer">
+                    Sign Up
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden py-4 border-t border-gold/20">
+            <div className="flex flex-col space-y-4">
+              <Link
+                href="/"
+                className="text-dark-green hover:text-dark-green/70"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                href="/shop"
+                className="text-dark-green hover:text-dark-green/70"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Shop
+              </Link>
+              <Link
+                href="/about"
+                className="text-dark-green hover:text-dark-green/70"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="text-dark-green hover:text-dark-green/70"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <div className="pt-4 border-t border-gold/20">
+                <Link
+                  href="/auth/login"
+                  className="text-dark-green hover:text-dark-green/70 block mb-3"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="text-dark-green hover:text-dark-green/70 block"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Sign Up
+                </Link>
               </div>
             </div>
-          ) : (
-            <Button variant="ghost" size="icon" className="text-dark-green" onClick={() => setIsSearchOpen(true)}>
-              <Search className="h-5 w-5" />
-              <span className="sr-only">Search</span>
-            </Button>
-          )}
-
-          <Link href="/auth/login">
-            <Button variant="ghost" size="icon" className="text-dark-green">
-              <User className="h-5 w-5" />
-              <span className="sr-only">Account</span>
-            </Button>
-          </Link>
-
-          <Link href="/checkout">
-            <Button variant="ghost" size="icon" className="text-dark-green">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="sr-only">Cart</span>
-            </Button>
-          </Link>
-        </div>
+          </div>
+        )}
       </div>
-    </header>
+    </nav>
   )
 }
+
+
