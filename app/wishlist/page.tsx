@@ -1,116 +1,130 @@
 "use client"
 
+import { useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { Heart, ShoppingCart } from "lucide-react"
 import { useWishlist } from "@/app/providers/wishlist-provider"
+import { useToast } from "@/components/ui/use-toast"
+import { Button } from "@/components/ui/button"
+import { useCart } from "@/contexts/cart-context"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { ProductCard } from "@/components/product-card"
-import { Button } from "@/components/ui/button"
-import { useToast } from "@/components/ui/use-toast"
-import { useState } from "react"
-import { QuickBuyModal } from "@/components/quick-buy-modal"
+import { products } from "@/app/shop/page"
 
-interface Product {
+interface WishlistItem {
   id: string
   name: string
   category: string
   price: number
   image: string
-  isNew?: boolean
 }
-
-// Sample products data - replace with your actual data
-const products: Product[] = [
-  {
-    id: "1",
-    name: "Classic Cord Set",
-    category: "Cord Sets",
-    price: 1299,
-    image: "/images/products/cord-set-1.jpg",
-    isNew: true,
-  },
-  {
-    id: "2",
-    name: "Embroidered Abaya",
-    category: "Abayas",
-    price: 2499,
-    image: "/images/products/abaya-1.jpg",
-  },
-  // Add more products as needed
-]
 
 export default function WishlistPage() {
   const { wishlistItems, removeFromWishlist } = useWishlist()
+  const { addItem } = useCart()
   const { toast } = useToast()
-  const [showQuickBuy, setShowQuickBuy] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
-  // Get all products that are in the wishlist
-  const wishlistProducts = products.filter((product) => wishlistItems.includes(product.id))
+  // Get full product details for wishlist items
+  const wishlistProducts = products.filter(product => 
+    wishlistItems.includes(product.id)
+  )
 
-  const handleMoveToCart = (product: Product) => {
-    removeFromWishlist(product.id)
+  const handleMoveToCart = (product: WishlistItem) => {
+    addItem({
+      id: parseInt(product.id),
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1
+    })
+    
     toast({
       title: "Added to Cart",
-      description: `${product.name} has been moved to your cart.`,
+      description: `${product.name} has been added to your cart.`,
       className: "bg-cream text-dark-green border-rose-gold",
     })
   }
 
-  const handleBuyNow = (product: Product) => {
-    setSelectedProduct(product)
-    setShowQuickBuy(true)
+  const handleRemoveFromWishlist = (productId: string) => {
+    removeFromWishlist(productId)
+    toast({
+      title: "Removed from Wishlist",
+      description: "Item has been removed from your wishlist.",
+      className: "bg-cream text-dark-green border-rose-gold",
+    })
   }
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <main className="min-h-screen flex flex-col bg-ivory">
       <Navbar />
+      
+      <div className="flex-1 container mx-auto px-4 py-12">
+        <h1 className="text-4xl font-serif text-dark-green text-center mb-12">My Wishlist</h1>
 
-      <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto">
-          {/* Page Header */}
-          <div className="text-center mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl font-serif text-dark-green mb-3 sm:mb-4">My Wishlist</h1>
-            <p className="text-dark-green/70 max-w-2xl mx-auto text-sm sm:text-base">
-              Your favorite items, all in one place.
-            </p>
-          </div>
-
-          {/* Wishlist Products Grid */}
-          {wishlistProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {wishlistProducts.map((product) => (
-                <div key={product.id} className="relative">
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-dark-green/70 text-lg mb-4">Your wishlist is empty</p>
-              <Button
-                variant="outline"
-                className="mt-4 border-dark-green text-dark-green hover:bg-dark-green hover:text-cream"
-                onClick={() => window.location.href = "/shop"}
-              >
+        {wishlistProducts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-lg text-dark-green/80 mb-6">Your wishlist is empty</p>
+            <Link href="/shop">
+              <Button className="bg-dark-green text-cream hover:bg-dark-green/90">
                 Continue Shopping
               </Button>
-            </div>
-          )}
-        </div>
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {wishlistProducts.map((product) => (
+              <div key={product.id} className="bg-cream rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                <div className="relative aspect-[3/4]">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-4 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <Link href={`/shop/product/${product.id}`}>
+                      <h3 className="font-serif text-lg text-dark-green hover:text-rose-gold transition-colors">
+                        {product.name}
+                      </h3>
+                    </Link>
+                    <button
+                      onClick={() => handleRemoveFromWishlist(product.id)}
+                      className="text-dark-green/60 hover:text-rose-gold transition-colors"
+                    >
+                      <Heart className="h-5 w-5 fill-rose-gold text-rose-gold" />
+                    </button>
+                  </div>
+                  <p className="text-sm text-dark-green/70">{product.category}</p>
+                  <p className="text-lg font-medium text-dark-green">₹{product.price.toLocaleString()}</p>
+
+                  <div className="grid grid-cols-2 gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-cream border-dark-green text-dark-green hover:bg-dark-green hover:text-cream"
+                      onClick={() => handleMoveToCart(product)}
+                    >
+                      Add to Cart
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="w-full bg-dark-green text-cream hover:bg-dark-green/90"
+                      onClick={() => handleMoveToCart(product)}
+                    >
+                      Buy Now
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {selectedProduct && (
-        <QuickBuyModal
-          isOpen={showQuickBuy}
-          onClose={() => {
-            setShowQuickBuy(false)
-            setSelectedProduct(null)
-          }}
-          product={selectedProduct}
-        />
-      )}
-
       <Footer />
-    </div>
+    </main>
   )
 } 
