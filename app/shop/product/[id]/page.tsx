@@ -3,13 +3,14 @@
 import { useState, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Heart, Share2, Info, Truck, Star, Package, ArrowRight, ChevronDown, ChevronUp } from "lucide-react"
 import { useCart } from "@/contexts/cart-context"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useToast } from "@/components/ui/use-toast"
 
 // Review interface
 interface Review {
@@ -22,7 +23,9 @@ interface Review {
 
 export default function ProductPage() {
   const params = useParams()
+  const router = useRouter()
   const { addItem } = useCart()
+  const { toast } = useToast()
   const [selectedColor, setSelectedColor] = useState<string>("")
   const [selectedSize, setSelectedSize] = useState<string>("")
   const [quantity, setQuantity] = useState(1)
@@ -105,7 +108,11 @@ export default function ProductPage() {
 
   const handleAddToCart = () => {
     if (!selectedColor || !selectedSize) {
-      alert("Please select both color and size")
+      toast({
+        title: "Selection Required",
+        description: "Please select both color and size",
+        variant: "destructive",
+      })
       return
     }
 
@@ -118,6 +125,38 @@ export default function ProductPage() {
       size: selectedSize,
       quantity: quantity
     })
+
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your cart.`,
+      className: "bg-cream text-dark-green border-rose-gold",
+    })
+
+    // Redirect to cart page after adding the item
+    router.push('/cart')
+  }
+
+  const handleBuyNow = () => {
+    if (!selectedColor || !selectedSize) {
+      toast({
+        title: "Selection Required",
+        description: "Please select both color and size",
+        variant: "destructive",
+      })
+      return
+    }
+
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0],
+      color: selectedColor,
+      size: selectedSize,
+      quantity: quantity
+    })
+
+    router.push('/checkout')
   }
 
   const handleImageZoom = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -428,10 +467,11 @@ export default function ProductPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <Button 
                 className="w-full bg-dark-green hover:bg-dark-green/90 text-white h-12 text-base"
                 onClick={handleAddToCart}
+                disabled={!selectedColor || !selectedSize}
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
                 Add to Cart
@@ -439,14 +479,12 @@ export default function ProductPage() {
               <Button 
                 variant="outline"
                 className="w-full border-gold/30 text-dark-green hover:bg-gold/10 h-12 text-base"
+                onClick={handleBuyNow}
+                disabled={!selectedColor || !selectedSize}
               >
                 Buy Now
               </Button>
               <div className="flex gap-4 justify-center">
-                <button className="text-dark-green/70 hover:text-dark-green flex items-center">
-                  <Heart className="h-5 w-5 mr-1" />
-                  <span className="text-sm">Wishlist</span>
-                </button>
                 <button className="text-dark-green/70 hover:text-dark-green flex items-center">
                   <Share2 className="h-5 w-5 mr-1" />
                   <span className="text-sm">Share</span>

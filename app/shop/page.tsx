@@ -9,10 +9,19 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { ProductCard } from "@/components/product-card"
 
+export interface Product {
+  id: string
+  name: string
+  category: string
+  price: number
+  image: string
+  isNew: boolean
+}
+
 // Sample products data
-export const products = [
+export const products: Product[] = [
   {
-    id: 1,
+    id: "1",
     name: "Classic Cord Set",
     category: "evening wear",
     price: 129.99,
@@ -20,7 +29,7 @@ export const products = [
     isNew: true,
   },
   {
-    id: 2,
+    id: "2",
     name: "Summer Breeze Set",
     category: "summer collection",
     price: 99.99,
@@ -28,7 +37,7 @@ export const products = [
     isNew: true,
   },
   {
-    id: 3,
+    id: "3",
     name: "Casual Comfort Set",
     category: "casual wear",
     price: 89.99,
@@ -36,7 +45,7 @@ export const products = [
     isNew: false,
   },
   {
-    id: 4,
+    id: "4",
     name: "Elegant Evening Set",
     category: "evening wear",
     price: 149.99,
@@ -44,7 +53,7 @@ export const products = [
     isNew: false,
   },
   {
-    id: 5,
+    id: "5",
     name: "Modern Minimal Set",
     category: "modern collection",
     price: 119.99,
@@ -52,14 +61,14 @@ export const products = [
     isNew: true,
   },
   {
-    id: 6,
+    id: "6",
     name: "Boho Chic Set",
     category: "boho collection",
     price: 139.99,
     image: "/placeholder.svg?height=800&width=600",
     isNew: false,
   },
-] as const
+]
 
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
@@ -150,12 +159,7 @@ export default function ShopPage() {
             {sortedProducts.map((product) => (
               <ProductCard
                 key={product.id}
-                id={product.id}
-                name={product.name}
-                category={product.category}
-                price={product.price}
-                image={product.image}
-                isNew={product.isNew}
+                {...product}
               />
             ))}
           </div>

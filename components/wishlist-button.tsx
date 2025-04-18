@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/tooltip"
 
 interface WishlistButtonProps {
-  productId: number
+  productId: string
   className?: string
   variant?: "default" | "card"
 }

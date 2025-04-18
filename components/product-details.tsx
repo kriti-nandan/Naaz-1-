@@ -35,7 +35,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     addItem({
       id: product.id,
       name: product.name,
-      category: product.category,
       price: product.price,
       image: `/images/products/${product.id}.jpg`,
       color: selectedColor,

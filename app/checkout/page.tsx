@@ -1,291 +1,440 @@
-import Link from "next/link"
-import Image from "next/image"
-import { ChevronLeft, CreditCard, Lock } from "lucide-react"
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { ArrowRight, CreditCard, Phone, Check, Truck, CreditCard as PaymentIcon, CheckCircle } from "lucide-react"
+import { useToast } from "@/components/ui/use-toast"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
 
-export default function CheckoutPage() {
-  return (
-    <div className="min-h-screen bg-ivory">
-      {/* Header */}
-      <header className="py-6 px-4 border-b border-gold/20">
-        <div className="container mx-auto">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="flex items-center">
-              <h1 className="text-2xl font-serif font-bold text-dark-green">Naaz</h1>
-            </Link>
-            <div className="flex items-center gap-2">
-              <Lock className="h-4 w-4 text-gold" />
-              <span className="text-dark-green/80 text-sm">Secure Checkout</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Checkout Content */}
-      <div className="container mx-auto py-12 px-4">
-        <Link href="/shop" className="inline-flex items-center text-dark-green/70 hover:text-dark-green mb-8">
-          <ChevronLeft className="h-4 w-4 mr-1" />
-          Return to Shopping
-        </Link>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Payment Details */}
-          <div className="lg:col-span-2 space-y-8">
-            <div>
-              <h2 className="font-serif text-2xl text-dark-green mb-6">Payment Details</h2>
-
-              <div className="bg-cream rounded-2xl p-8 shadow-md">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-medium text-dark-green">Credit Card Information</h3>
-                  <div className="flex gap-2">
-                    <CreditCard className="h-5 w-5 text-gold" />
-                  </div>
-                </div>
-
-                <form className="space-y-6">
-                  <div className="space-y-2">
-                    <label htmlFor="card-name" className="text-dark-green/80 text-sm">
-                      Cardholder Name
-                    </label>
-                    <Input
-                      id="card-name"
-                      placeholder="Name as it appears on card"
-                      className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label htmlFor="card-number" className="text-dark-green/80 text-sm">
-                      Card Number
-                    </label>
-                    <Input
-                      id="card-number"
-                      placeholder="•••• •••• •••• ••••"
-                      className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="expiry" className="text-dark-green/80 text-sm">
-                        Expiration Date
-                      </label>
-                      <Input
-                        id="expiry"
-                        placeholder="MM / YY"
-                        className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="cvv" className="text-dark-green/80 text-sm">
-                        Security Code (CVV)
-                      </label>
-                      <Input
-                        id="cvv"
-                        placeholder="•••"
-                        className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                      />
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="font-serif text-2xl text-dark-green mb-6">Billing Address</h2>
-
-              <div className="bg-cream rounded-2xl p-8 shadow-md">
-                <form className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="first-name" className="text-dark-green/80 text-sm">
-                        First Name
-                      </label>
-                      <Input
-                        id="first-name"
-                        className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="last-name" className="text-dark-green/80 text-sm">
-                        Last Name
-                      </label>
-                      <Input
-                        id="last-name"
-                        className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label htmlFor="address" className="text-dark-green/80 text-sm">
-                      Street Address
-                    </label>
-                    <Input
-                      id="address"
-                      className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="city" className="text-dark-green/80 text-sm">
-                        City
-                      </label>
-                      <Input
-                        id="city"
-                        className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="postal-code" className="text-dark-green/80 text-sm">
-                        Postal Code
-                      </label>
-                      <Input
-                        id="postal-code"
-                        className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="country" className="text-dark-green/80 text-sm">
-                        Country
-                      </label>
-                      <Select>
-                        <SelectTrigger className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white">
-                          <SelectValue placeholder="Select country" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="us">United States</SelectItem>
-                          <SelectItem value="ca">Canada</SelectItem>
-                          <SelectItem value="uk">United Kingdom</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="state" className="text-dark-green/80 text-sm">
-                        State / Province
-                      </label>
-                      <Select>
-                        <SelectTrigger className="border-gold/30 rounded-xl focus:border-gold focus:ring-gold/30 bg-white">
-                          <SelectValue placeholder="Select state" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="ny">New York</SelectItem>
-                          <SelectItem value="ca">California</SelectItem>
-                          <SelectItem value="tx">Texas</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-2">
-                    <Checkbox
-                      id="shipping"
-                      className="border-gold/50 data-[state=checked]:bg-gold data-[state=checked]:text-dark-green mt-1"
-                    />
-                    <label htmlFor="shipping" className="text-sm text-dark-green/70 leading-tight">
-                      Shipping address is the same as billing address
-                    </label>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          {/* Order Summary */}
-          <div>
-            <h2 className="font-serif text-2xl text-dark-green mb-6">Order Summary</h2>
-
-            <div className="bg-cream rounded-2xl p-8 shadow-md">
-              <div className="space-y-6">
-                {/* Order Items */}
-                <div className="space-y-4">
-                  {orderItems.map((item) => (
-                    <div key={item.id} className="flex gap-4">
-                      <div className="relative w-20 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                        <Image src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-dark-green font-medium">{item.name}</h3>
-                        <p className="text-dark-green/60 text-sm">Size: {item.size}</p>
-                        <div className="flex justify-between mt-2">
-                          <p className="text-dark-green/60 text-sm">Qty: {item.quantity}</p>
-                          <p className="text-dark-green font-medium">${item.price.toFixed(2)}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="border-t border-gold/20 pt-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-dark-green/70">Subtotal</span>
-                      <span className="text-dark-green">$529.98</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-dark-green/70">Shipping</span>
-                      <span className="text-dark-green">$12.00</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-dark-green/70">Tax</span>
-                      <span className="text-dark-green">$43.20</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t border-gold/20 pt-4">
-                  <div className="flex justify-between font-medium">
-                    <span className="text-dark-green">Total</span>
-                    <span className="text-dark-green text-lg">$585.18</span>
-                  </div>
-                </div>
-
-                <Button className="bg-gold hover:bg-gold/90 text-dark-green font-medium rounded-xl w-full">
-                  Complete Purchase
-                </Button>
-
-                <p className="text-dark-green/60 text-xs text-center">
-                  By completing your purchase, you agree to our{" "}
-                  <Link href="/terms" className="text-rose-gold hover:underline">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link href="/privacy" className="text-rose-gold hover:underline">
-                    Privacy Policy
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+type ShippingDetails = {
+  fullName: string
+  email: string
+  phone: string
+  address: string
+  pincode: string
+  city: string
+  state: string
 }
 
-const orderItems = [
-  {
-    id: 1,
-    name: "Emerald Silk Cord Set",
-    size: "Medium",
-    quantity: 1,
-    price: 249.99,
-    image: "/placeholder.svg?height=200&width=150",
-  },
-  {
-    id: 2,
-    name: "Golden Hour Ensemble",
-    size: "Small",
-    quantity: 1,
-    price: 279.99,
-    image: "/placeholder.svg?height=200&width=150",
-  },
+type PaymentMethod = "card" | "phonepe" | "razorpay"
+
+type CardDetails = {
+  cardNumber: string
+  cardHolder: string
+  expiryDate: string
+  cvv: string
+}
+
+const steps = [
+  { id: 1, label: "Shipping", icon: Truck },
+  { id: 2, label: "Review", icon: Check },
+  { id: 3, label: "Payment", icon: PaymentIcon }
 ]
+
+export default function Checkout() {
+  const router = useRouter()
+  const { toast } = useToast()
+  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const [showCardForm, setShowCardForm] = useState(false)
+  const [shippingDetails, setShippingDetails] = useState<ShippingDetails>({
+    fullName: "",
+    email: "",
+    phone: "",
+    address: "",
+    pincode: "",
+    city: "",
+    state: "",
+  })
+  const [cardDetails, setCardDetails] = useState<CardDetails>({
+    cardNumber: "",
+    cardHolder: "",
+    expiryDate: "",
+    cvv: "",
+  })
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card")
+
+  const handleShippingSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (Object.values(shippingDetails).some(value => !value)) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please fill in all fields",
+      })
+      return
+    }
+    setStep(2)
+  }
+
+  const handleAddressConfirm = () => {
+    setStep(3)
+  }
+
+  const handlePaymentMethodSelect = (value: PaymentMethod) => {
+    setPaymentMethod(value)
+    setShowCardForm(value === "card")
+  }
+
+  const handleCardSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (Object.values(cardDetails).some(value => !value)) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please fill in all card details",
+      })
+      return
+    }
+    handlePayment()
+  }
+
+  const handlePayment = () => {
+    toast({
+      title: "Order Confirmed!",
+      description: "Thank you for shopping with Naaz. Your order has been confirmed.",
+    })
+    router.push("/order-confirmation")
+  }
+
+  return (
+    <main className="min-h-screen flex flex-col bg-ivory">
+      <Navbar />
+
+      <div className="flex-1 container mx-auto px-4 py-12">
+        <h1 className="text-4xl font-serif text-dark-green text-center mb-12">Checkout</h1>
+
+        {/* Progress Steps */}
+        <div className="max-w-3xl mx-auto mb-12">
+          <div className="flex items-center justify-center">
+            {steps.map((s, idx) => (
+              <div key={s.id} className="flex items-center">
+                <div className="relative">
+                  <div 
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
+                      step >= s.id 
+                        ? "bg-dark-green text-white" 
+                        : "bg-cream border-2 border-dark-green/20 text-dark-green/40"
+                    }`}
+                  >
+                    <s.icon className="w-6 h-6" />
+                  </div>
+                  <span className={`absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm font-medium ${
+                    step >= s.id ? "text-dark-green" : "text-dark-green/40"
+                  }`}>
+                    {s.label}
+                  </span>
+                </div>
+                {idx < steps.length - 1 && (
+                  <div className={`w-24 h-0.5 mx-2 ${
+                    step > s.id ? "bg-dark-green" : "bg-dark-green/20"
+                  }`} />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="max-w-2xl mx-auto">
+          {step === 1 && (
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <h2 className="text-2xl font-serif text-dark-green mb-8">Shipping Details</h2>
+              
+              <form onSubmit={handleShippingSubmit} className="space-y-6">
+                <div className="space-y-5">
+                  <div>
+                    <Label htmlFor="fullName" className="text-base font-medium text-dark-green/80">
+                      Full Name
+                    </Label>
+                    <Input
+                      id="fullName"
+                      value={shippingDetails.fullName}
+                      onChange={(e) => setShippingDetails(prev => ({ ...prev, fullName: e.target.value }))}
+                      className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="email" className="text-base font-medium text-dark-green/80">
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={shippingDetails.email}
+                      onChange={(e) => setShippingDetails(prev => ({ ...prev, email: e.target.value }))}
+                      className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                      placeholder="Enter your email address"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="phone" className="text-base font-medium text-dark-green/80">
+                      Phone Number
+                    </Label>
+                    <Input
+                      id="phone"
+                      value={shippingDetails.phone}
+                      onChange={(e) => setShippingDetails(prev => ({ ...prev, phone: e.target.value }))}
+                      className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                      placeholder="Enter your phone number"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="address" className="text-base font-medium text-dark-green/80">
+                      Complete Address
+                    </Label>
+                    <Input
+                      id="address"
+                      value={shippingDetails.address}
+                      onChange={(e) => setShippingDetails(prev => ({ ...prev, address: e.target.value }))}
+                      className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                      placeholder="Enter your complete address"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="pincode" className="text-base font-medium text-dark-green/80">
+                        Pincode
+                      </Label>
+                      <Input
+                        id="pincode"
+                        value={shippingDetails.pincode}
+                        onChange={(e) => setShippingDetails(prev => ({ ...prev, pincode: e.target.value }))}
+                        className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                        placeholder="Enter pincode"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="city" className="text-base font-medium text-dark-green/80">
+                        City
+                      </Label>
+                      <Input
+                        id="city"
+                        value={shippingDetails.city}
+                        onChange={(e) => setShippingDetails(prev => ({ ...prev, city: e.target.value }))}
+                        className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                        placeholder="Enter city"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="state" className="text-base font-medium text-dark-green/80">
+                      State
+                    </Label>
+                    <Input
+                      id="state"
+                      value={shippingDetails.state}
+                      onChange={(e) => setShippingDetails(prev => ({ ...prev, state: e.target.value }))}
+                      className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                      placeholder="Enter state"
+                    />
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 mt-8 bg-dark-green text-cream hover:bg-dark-green/90 transition-all duration-300"
+                >
+                  Continue to Review
+                </Button>
+              </form>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <h2 className="text-2xl font-serif text-dark-green mb-8">Review Your Details</h2>
+              
+              <div className="bg-cream/30 p-6 rounded-lg space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-dark-green/60">Full Name</p>
+                    <p className="text-base font-medium text-dark-green">{shippingDetails.fullName}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-dark-green/60">Email</p>
+                    <p className="text-base font-medium text-dark-green">{shippingDetails.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-dark-green/60">Phone</p>
+                    <p className="text-base font-medium text-dark-green">{shippingDetails.phone}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-dark-green/60">Address</p>
+                    <p className="text-base font-medium text-dark-green">{shippingDetails.address}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-dark-green/60">Pincode</p>
+                    <p className="text-base font-medium text-dark-green">{shippingDetails.pincode}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-dark-green/60">City</p>
+                    <p className="text-base font-medium text-dark-green">{shippingDetails.city}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-dark-green/60">State</p>
+                    <p className="text-base font-medium text-dark-green">{shippingDetails.state}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-4 mt-8">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setStep(1)}
+                  className="flex-1 h-12 border-dark-green text-dark-green hover:bg-dark-green hover:text-cream transition-all duration-300"
+                >
+                  Edit Details
+                </Button>
+                <Button 
+                  onClick={handleAddressConfirm}
+                  className="flex-1 h-12 bg-dark-green text-cream hover:bg-dark-green/90 transition-all duration-300"
+                >
+                  Continue to Payment
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <h2 className="text-2xl font-serif text-dark-green mb-8">Select Payment Method</h2>
+              
+              <RadioGroup 
+                value={paymentMethod} 
+                onValueChange={handlePaymentMethodSelect}
+                className="space-y-4"
+              >
+                <div className={`flex items-center space-x-4 p-4 rounded-lg cursor-pointer transition-all duration-300 ${
+                  paymentMethod === "card" ? "bg-cream/30 border-gold" : "border hover:bg-cream/10"
+                }`}>
+                  <RadioGroupItem value="card" id="card" />
+                  <Label htmlFor="card" className="flex items-center gap-3 cursor-pointer">
+                    <CreditCard className="h-5 w-5 text-dark-green" />
+                    <div>
+                      <p className="font-medium text-dark-green">Card Payment</p>
+                      <p className="text-sm text-dark-green/60">Pay securely with your credit/debit card</p>
+                    </div>
+                  </Label>
+                </div>
+
+                <div className={`flex items-center space-x-4 p-4 rounded-lg cursor-pointer transition-all duration-300 ${
+                  paymentMethod === "phonepe" ? "bg-cream/30 border-gold" : "border hover:bg-cream/10"
+                }`}>
+                  <RadioGroupItem value="phonepe" id="phonepe" />
+                  <Label htmlFor="phonepe" className="flex items-center gap-3 cursor-pointer">
+                    <Phone className="h-5 w-5 text-dark-green" />
+                    <div>
+                      <p className="font-medium text-dark-green">PhonePe</p>
+                      <p className="text-sm text-dark-green/60">Pay using PhonePe UPI</p>
+                    </div>
+                  </Label>
+                </div>
+
+                <div className={`flex items-center space-x-4 p-4 rounded-lg cursor-pointer transition-all duration-300 ${
+                  paymentMethod === "razorpay" ? "bg-cream/30 border-gold" : "border hover:bg-cream/10"
+                }`}>
+                  <RadioGroupItem value="razorpay" id="razorpay" />
+                  <Label htmlFor="razorpay" className="flex items-center gap-3 cursor-pointer">
+                    <ArrowRight className="h-5 w-5 text-dark-green" />
+                    <div>
+                      <p className="font-medium text-dark-green">Razorpay</p>
+                      <p className="text-sm text-dark-green/60">Pay using multiple payment options</p>
+                    </div>
+                  </Label>
+                </div>
+              </RadioGroup>
+
+              {showCardForm ? (
+                <form onSubmit={handleCardSubmit} className="mt-8 space-y-5">
+                  <div>
+                    <Label htmlFor="cardNumber" className="text-base font-medium text-dark-green/80">
+                      Card Number
+                    </Label>
+                    <Input
+                      id="cardNumber"
+                      value={cardDetails.cardNumber}
+                      onChange={(e) => setCardDetails(prev => ({ ...prev, cardNumber: e.target.value }))}
+                      className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                      placeholder="1234 5678 9012 3456"
+                      maxLength={19}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="cardHolder" className="text-base font-medium text-dark-green/80">
+                      Card Holder Name
+                    </Label>
+                    <Input
+                      id="cardHolder"
+                      value={cardDetails.cardHolder}
+                      onChange={(e) => setCardDetails(prev => ({ ...prev, cardHolder: e.target.value }))}
+                      className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                      placeholder="Enter card holder name"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="expiryDate" className="text-base font-medium text-dark-green/80">
+                        Expiry Date
+                      </Label>
+                      <Input
+                        id="expiryDate"
+                        value={cardDetails.expiryDate}
+                        onChange={(e) => setCardDetails(prev => ({ ...prev, expiryDate: e.target.value }))}
+                        className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                        placeholder="MM/YY"
+                        maxLength={5}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="cvv" className="text-base font-medium text-dark-green/80">
+                        CVV
+                      </Label>
+                      <Input
+                        id="cvv"
+                        type="password"
+                        value={cardDetails.cvv}
+                        onChange={(e) => setCardDetails(prev => ({ ...prev, cvv: e.target.value }))}
+                        className="mt-2 h-12 px-4 border-gold/30 focus:border-gold focus:ring-gold/30 rounded-lg"
+                        placeholder="123"
+                        maxLength={3}
+                      />
+                    </div>
+                  </div>
+
+                  <Button 
+                    type="submit"
+                    className="w-full h-12 mt-8 bg-dark-green text-cream hover:bg-dark-green/90 transition-all duration-300"
+                  >
+                    Pay Now
+                  </Button>
+                </form>
+              ) : (
+                <Button 
+                  onClick={handlePayment}
+                  className="w-full h-12 mt-8 bg-dark-green text-cream hover:bg-dark-green/90 transition-all duration-300"
+                >
+                  Proceed to Pay
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <Footer />
+    </main>
+  )
+}

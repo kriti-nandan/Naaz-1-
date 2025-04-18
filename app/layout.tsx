@@ -6,17 +6,20 @@ import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 import { CartProvider } from "@/contexts/cart-context"
 import { AuthProvider } from "@/contexts/auth-context"
-import { WishlistProvider } from "./providers/wishlist-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { Inter } from "next/font/google"
+import { WishlistProvider } from "@/app/providers/wishlist-provider"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-serif",
 })
 
+const inter = Inter({ subsets: ["latin"] })
+
 export const metadata: Metadata = {
-  title: "Naaz - Luxury Fashion",
-  description: "Discover timeless elegance with Naaz's luxury fashion collections.",
+  title: "Naaz - Elegant Fashion",
+  description: "Discover elegant fashion pieces for every occasion",
 }
 
 export default function RootLayout({
@@ -29,7 +32,8 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-ivory font-sans antialiased",
-          playfair.variable
+          playfair.variable,
+          inter.className
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
@@ -37,11 +41,11 @@ export default function RootLayout({
             <CartProvider>
               <WishlistProvider>
                 {children}
-                <Toaster />
               </WishlistProvider>
             </CartProvider>
           </AuthProvider>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   )

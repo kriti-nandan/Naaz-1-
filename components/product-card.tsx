@@ -2,14 +2,15 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Heart } from "lucide-react"
 import { useWishlist } from "@/app/providers/wishlist-provider"
-import { cn } from "@/lib/utils"
 import { useToast } from "@/components/ui/use-toast"
-import { motion, AnimatePresence } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { useCart } from "@/contexts/cart-context"
 
 interface ProductCardProps {
-  id: number
+  id: string
   name: string
   category: string
   price: number
@@ -18,81 +19,102 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ id, name, category, price, image, isNew }: ProductCardProps) {
-  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist()
+  const router = useRouter()
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
+  const { addItem } = useCart()
   const { toast } = useToast()
-  const isWishlisted = isInWishlist(id)
 
-  const handleWishlist = (e: React.MouseEvent) => {
-    e.preventDefault() // Prevent navigation when clicking the heart
-    
-    if (isWishlisted) {
+  const handleWishlistClick = () => {
+    if (isInWishlist(id)) {
       removeFromWishlist(id)
       toast({
-        description: `${name} removed from your wishlist`,
-        duration: 2000,
-        className: "bg-cream text-dark-green border-gold"
+        title: "Removed from Wishlist",
+        description: `${name} has been removed from your wishlist.`,
+        className: "bg-cream text-dark-green border-rose-gold",
       })
     } else {
       addToWishlist(id)
       toast({
-        description: `${name} added to your wishlist`,
-        duration: 2000,
-        className: "bg-cream text-dark-green border-gold"
+        title: "Added to Wishlist",
+        description: `${name} has been added to your wishlist.`,
+        className: "bg-cream text-dark-green border-rose-gold",
       })
     }
   }
 
+  const handleMoveToCart = () => {
+    addItem({
+      id: parseInt(id),
+      name,
+      price,
+      image,
+      quantity: 1
+    })
+    
+    toast({
+      title: "Added to Cart",
+      description: `${name} has been added to your cart.`,
+      className: "bg-cream text-dark-green border-rose-gold",
+    })
+
+    // Redirect to cart page after adding the item
+    router.push('/cart')
+  }
+
   return (
-    <div className="group relative">
-      <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-cream">
+    <div className="group relative bg-cream rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+      {isNew && (
+        <div className="absolute top-2 left-2 z-10 bg-rose-gold text-white px-2 py-1 rounded-full text-xs font-medium">
+          New
+        </div>
+      )}
+
+      <div className="relative aspect-[3/4] overflow-hidden">
         <Image
           src={image}
           alt={name}
           fill
-          className="object-cover transition-transform group-hover:scale-105 duration-500"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {isNew && (
-          <div className="absolute top-2 left-2 bg-gold px-2 py-1 rounded-full">
-            <span className="text-dark-green text-xs font-medium">New</span>
-          </div>
-        )}
       </div>
-      <Link href={`/shop/product/${id}`}>
-        <div className="mt-4 space-y-1">
-          <div className="flex items-center gap-2 group/wishlist">
-            <h3 className="font-serif text-lg text-dark-green group-hover:text-dark-green/80 transition-colors">
+
+      <div className="p-4 space-y-3">
+        <div className="flex justify-between items-start">
+          <Link href={`/shop/product/${id}`}>
+            <h3 className="font-serif text-lg text-dark-green hover:text-rose-gold transition-colors">
               {name}
             </h3>
-            <motion.button
-              onClick={handleWishlist}
-              className="focus:outline-none"
-              whileTap={{ scale: 0.8 }}
-              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={isWishlisted ? "filled" : "outlined"}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <Heart
-                    className={cn(
-                      "h-5 w-5 transition-all duration-300",
-                      isWishlisted
-                        ? "fill-rose-500 stroke-rose-500"
-                        : "stroke-dark-green/60 group-hover/wishlist:stroke-rose-500"
-                    )}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </motion.button>
-          </div>
-          <p className="text-dark-green/60 text-sm">{category}</p>
-          <p className="text-dark-green font-medium">${price.toFixed(2)}</p>
+          </Link>
+          <button
+            onClick={handleWishlistClick}
+            className="text-dark-green/60 hover:text-rose-gold transition-colors"
+          >
+            <Heart
+              className={`h-5 w-5 ${isInWishlist(id) ? "fill-rose-gold text-rose-gold" : ""}`}
+            />
+          </button>
         </div>
-      </Link>
+        <p className="text-sm text-dark-green/70">{category}</p>
+        <p className="text-lg font-medium text-dark-green">₹{price.toLocaleString()}</p>
+
+        <div className="grid grid-cols-2 gap-2 pt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full bg-cream border-dark-green text-dark-green hover:bg-dark-green hover:text-cream"
+            onClick={handleMoveToCart}
+          >
+            Add to Cart
+          </Button>
+          <Button
+            size="sm"
+            className="w-full bg-dark-green text-cream hover:bg-dark-green/90"
+            onClick={handleMoveToCart}
+          >
+            Buy Now
+          </Button>
+        </div>
+      </div>
     </div>
   )
 } 
